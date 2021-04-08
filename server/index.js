@@ -2,10 +2,10 @@ const express = require('express');
 const { graphqlHTTP } = require('express-graphql');
 const schema = require('./schema/schema');
 
-// init server
+// init express server
 const app = express();
 
-// creates a graphql http server
+// creates a graphql http express server
 app.use('/graphql', graphqlHTTP({
     schema: schema,
     graphiql: true
