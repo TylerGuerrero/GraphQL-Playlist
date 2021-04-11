@@ -1,4 +1,3 @@
-const _ = require('lodash');
 const Book = require('../models/book');
 const Author = require('../models/author');
 
@@ -8,7 +7,8 @@ const {
     GraphQLSchema, 
     GraphQLID,
     GraphQLInt,
-    GraphQLList
+    GraphQLList,
+    GraphQLNonNull
 } = require('graphql');
 
 const BookType = new GraphQLObjectType({
@@ -63,7 +63,7 @@ const RootQuery = new GraphQLObjectType({
                 // args.id will be used to query the database to get data
                 // code to get data from db / other source
                 console.log(typeof(args.id)); // is type string
-              return Book.findById(args.id);
+                return Book.findById(args.id);
             }
         },
         author: {
@@ -97,8 +97,8 @@ const Mutation = new GraphQLObjectType({
         addAuthor: {
             type: AuthorType,
             args: {
-                name: {type: GraphQLString},
-                age: {type: GraphQLInt},
+                name: {type: new GraphQLNonNull(GraphQLString)},
+                age: {type: new GraphQLNonNull(GraphQLInt)},
 
             },
             resolve(parent, args) {
@@ -113,9 +113,9 @@ const Mutation = new GraphQLObjectType({
         addBook: {
             type: BookType,
             args: {
-                name: {type: GraphQLString},
-                genre: {type: GraphQLString},
-                authorId: {type: GraphQLID}
+                name: {type: new GraphQLNonNull(GraphQLString)},
+                genre: {type: new GraphQLNonNull(GraphQLString)},
+                authorId: {type: new GraphQLNonNull(GraphQLID)}
             },
             resolve(parent, args) {
                 let book = new Book({
