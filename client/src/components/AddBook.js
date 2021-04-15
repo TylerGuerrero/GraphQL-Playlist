@@ -1,12 +1,12 @@
-import {useQuery} from '@apollo/client';
-import { getAuthorQuery } from '../queries/query';
+import { useQuery, useMutation } from '@apollo/client';
+import { getAuthorQuery, addBookMutation, getBooksQuery } from '../queries/query';
 import { useState } from 'react';
 
-const displayAuthors = (loading, data) =>{
-    if (loading){
-        return(<option disabled>Loading authors...</option> );
+const displayAuthors = (loading, data) => {
+    if (loading) {
+        return (<option disabled>Loading authors...</option>);
     } else {
-        return data.authors.map(author =>{
+        return data.authors.map(author => {
             return (<option key={author.id} value={author.id}>
                         {author.name}
                     </option>)
@@ -14,10 +14,19 @@ const displayAuthors = (loading, data) =>{
     }
 }
 
-function AddBook(props) {
+  function AddBook(props) {
+    const [addBookMut] = useMutation(addBookMutation);
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log(name, genre, authorId);
+        addBookMut({
+          variables: {
+            name: name,
+            genre: genre,
+            authorId: authorId
+          },
+          refetchQueries: [{query: getBooksQuery}]
+        })
     }
 
     const [name, setName] = useState("");
@@ -29,27 +38,30 @@ function AddBook(props) {
    
     return (
         <form id="add-book" onSubmit={handleSubmit}>
+          
+          <div className="field">
+            <label>Book name:</label>
+            <input type="text" name="book" value={name}
+            onChange={(e) => setName(e.target.value)}/>
+          </div>
+          
+          <div className="field">
+            <label>Genre:</label>
+            <input type="text" name="genre" value={genre}
+            onChange={(e) => setGenre(e.target.value)}/>
+          </div>
 
-        <div className="field">
-          <label>Book name:</label>
-          <input type="text" name="bookName" value={name}
-          onChange={(e) => setName(e.target.value)}/>
-        </div>
-        
-        <div className="field">
-          <label>Genre:</label>
-          <input type="text" name="genre" value={genre}
-          onChange={(e) => setGenre(e.target.value)}/>
-        </div>
+          <div className="field">
+            <label>Author:</label>
+            <select
+            name="authorId" 
+            value={authorId} 
+            onChange={(e) => setAuthorId(e.target.value)}>
+                {displayAuthors(loading, data)}
+            </select>
+          </div>
 
-        <div className="field">
-          <label>Author:</label>
-          <select value={authorId} onChange={(e) => setAuthorId(e.target.value)}>
-              {displayAuthors(loading, data)}
-          </select>
-        </div>
-        <button>+</button>
-
+          <button>+</button>
       </form>
     );
 }

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+// shape of the document
 const AuthorSchema = mongoose.Schema({
     name: {
         type: String,
@@ -11,4 +12,5 @@ const AuthorSchema = mongoose.Schema({
     }
 }); 
 
+// an instance of a model is a document
 module.exports = mongoose.model('Authors', AuthorSchema)

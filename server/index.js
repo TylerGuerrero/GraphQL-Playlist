@@ -9,14 +9,14 @@ const cors = require('cors');
 const app = express();
 
 // allow cross-origin requests
-app.use(cors()); 
+app.use(cors())
 
 mongoose.connect(config.database, {useNewUrlParser: true, useUnifiedTopology: true} )
-.catch(err => console.log(err));
+.catch(err => console.log(err))
 
 mongoose.connection.on('error', (err) => {
     console.log(err);
-});
+})
 
 mongoose.connection.once('open', () => {
     console.log('MongoDB Connected');
